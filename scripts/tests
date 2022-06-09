@@ -1,0 +1,2 @@
+#!/bin/bash
+docker exec -it sandbox-python38 pytest -vv -p no:cacheprovider /app/src

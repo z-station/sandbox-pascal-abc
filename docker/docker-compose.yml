@@ -1,0 +1,33 @@
+version: "3.3"
+
+services:
+
+  sandbox-pascal-abc:
+    build:
+      context: ..
+      args:
+        - SANDBOX_USER_UID=999
+        - SANDBOX_DIR=/sandbox
+      dockerfile: ./docker/Dockerfile
+    container_name: sandbox-pascal-abc
+    image: sandbox-pascal-abc
+    volumes:
+      - ../src:/app/src
+      - docker_shared_files:/files:ro
+    ports:
+      - "9005:9005"
+    networks:
+      - docker_localhost
+    environment:
+      - SANDBOX_USER_UID=999
+      - SANDBOX_DIR=/sandbox
+    restart: on-failure
+    command: gunicorn --pythonpath '/app/src' --bind 0:9005 app.main:app --reload -w 1
+
+networks:
+  docker_localhost:
+    external: true
+
+volumes:
+  docker_shared_files:
+    external: true

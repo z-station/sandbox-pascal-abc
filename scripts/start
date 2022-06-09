@@ -1,0 +1,3 @@
+#!/bin/bash
+docker network create docker_localhost || true
+docker-compose -f ../docker/docker-compose.yml start
