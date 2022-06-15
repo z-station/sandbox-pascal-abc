@@ -13,11 +13,11 @@ services:
     image: sandbox-pascal-abc
     volumes:
       - ../src:/app/src
-      - docker_shared_files:/files:ro
+      - shared_files:/files:ro
     ports:
       - "9005:9005"
     networks:
-      - docker_localhost
+      - localhost
     environment:
       - SANDBOX_USER_UID=999
       - SANDBOX_DIR=/sandbox
@@ -25,9 +25,9 @@ services:
     command: gunicorn --pythonpath '/app/src' --bind 0:9005 app.main:app --reload -w 1
 
 networks:
-  docker_localhost:
+  localhost:
     external: true
 
 volumes:
-  docker_shared_files:
+  shared_files:
     external: true
