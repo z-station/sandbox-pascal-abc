@@ -22,14 +22,13 @@ def test_execute__float_result__ok():
     # arrange
     data_in = '9.08'
     code = (
-        '#include<iostream>\n'
-        '#include<cmath>\n'
-        'using namespace std;\n'
-        'main(){\n'
-        '  float x;\n'
-        '  cin>>x;\n'
-        '  cout<<x-(floor(x))<<endl;\n'
-        '}'
+        'var a: double\n;'
+        'i: double;\n'
+        'begin\n'
+        'readln (a);\n'
+        'i := a - round(a);\n'
+        'writeln(i)\n'
+        'end.'
     )
     file = PascalFile(code)
     PascalService._compile(file)
@@ -56,13 +55,13 @@ def test_execute__data_in_is_integer__ok():
         '50'
     )
     code = (
-        '#include<iostream>\n'
-        'using namespace std;\n'
-        'int main(){\n'
-        '  int n, k;\ncin>>n>>k;\n'
-        '  cout<<k/n<<endl;\n'
-        '  cout<<k-(k/n)*n;\n'
-        '}'
+        'program apples;\n'
+        'var n,k: integer;\n'
+        'begin\n'
+        'readln(n,k);\n'
+        'writeln(k div n);\n'
+        'write(k mod n)\n'
+        'end.'
     )
     file = PascalFile(code)
     PascalService._compile(file)
@@ -84,19 +83,25 @@ def test_execute__data_in_is_integer__ok():
 
 def test_execute__data_in_is_string__ok():
 
-    """ Задача "Удаление фрагмента" """
+    """ Задача "Замена подстроки" """
 
     # arrange
-    data_in = 'In the hole in the ground there lived a hobbit'
+    data_in = '1213141516171819101'
     code = (
-        '#include<iostream>\n'
-        'using namespace std;\n'
-        'main(){\n'
-        '  string s;\n'
-        '  getline(cin, s);\n'
-        '  s = s.substr(0, s.find("h")) + s.substr(s.rfind("h") + 1);\n'
-        '  cout << s;\n'
-        '}'
+        'var s,new_s: string;\n'
+        'i: integer;\n'
+        'begin\n'
+        'readln(s);\n'
+        'new_s:=\'\';\n'
+        'for i:=1 to length(s) do\n'
+        'begin\n'
+        'if s[i]= \'1\' then\n'
+        'new_s:=new_s+\'one\'\n'
+        'else\n'
+        'new_s:=new_s+s[i];\n'
+        'end;\n'
+        'write(new_s);\n'
+        'end.'
     )
     file = PascalFile(code)
     PascalService._compile(file)
@@ -108,7 +113,7 @@ def test_execute__data_in_is_string__ok():
     )
 
     # assert
-    assert exec_result.result == 'In tobbit'
+    assert exec_result.result == 'one2one3one4one5one6one7one8one9one0one'
     assert exec_result.error is None
     file.remove()
 
@@ -116,7 +121,7 @@ def test_execute__data_in_is_string__ok():
 def test_execute__empty_result__return_none():
 
     # arrange
-    code = 'main(){}'
+    code = 'begin\nend.'
     file = PascalFile(code)
     PascalService._compile(file)
 
@@ -135,10 +140,12 @@ def test_execute__timeout__return_error(mocker):
 
     # arrange
     code = (
-        'main(){\n'
-        '  while(1){}\n'
-        '  return 0;\n'
-        '}'
+        'var c: integer;\n'
+        'begin\n'
+        'c:=0;\n'
+        'while c = 0 do\n'
+        'writeln(\'UWU\');\n'
+        'end.'
     )
     file = PascalFile(code)
     PascalService._compile(file)
@@ -159,25 +166,25 @@ def test_execute__deep_recursive__error(mocker):
 
     # arrange
     code = (
-        '#include<iostream>\n'
-        'using namespace std;\n'
-        'int fibonacci(int N){\n'
-        '  if ( N == 0 ) return 0;\n'
-        '  else if ( N == 1 ) return 1;\n'
-        '  else\n'
-        'return (fibonacci(N-1) + fibonacci(N-2));\n'
-        '}\n'
-        'int main(){\n'
-        '  cout<<fibonacci(50)<<endl;\n'
-        '  return 0;\n'
-        '}\n'
+        'function fib(i:integer): longint;\n'
+        'begin\n'
+        'if i<=2 then\n'
+        'fib:=1\n'
+        'else\n'
+        'fib:=fib(i-1)+fib(i-2)\n'
+        'end;\n'
+        'begin\n'
+        'var n : integer;\n'
+        'readln(n);\n'
+        'writeln(fib(n));\n'
+        'end.'
     )
     file = PascalFile(code)
     PascalService._compile(file)
     mocker.patch('app.config.TIMEOUT', 1)
 
     # act
-    execute_result = PascalService._execute(file=file)
+    execute_result = PascalService._execute(file=file, data_in='50')
 
     # assert
     assert execute_result.error == messages.MSG_1
@@ -192,27 +199,14 @@ def test_execute__write_access__error():
 
     # arrange
     code = (
-        '#include <stdio.h>\n'
-        '#include <unistd.h>\n'
-        '#include <errno.h>\n'
-        '#include<iostream>\n'
-        'using namespace std;\n'
-        'main(){\n'
-        '  int returnval;\n'
-        '  returnval = access("/app/src/", W_OK);\n'
-        '  if (returnval == 0){\n'
-        '    cout<<"Write allowed."<<endl;\n'
-        '  } else {\n'
-        '    if (errno == EACCES){\n'
-        '      cout<<"Write Permission denied."<<endl;\n'
-        '    } else if (errno == ENOENT){\n'
-        '      cout<<"No such file or directory."<<endl;\n'
-        '    } else {\n'
-        '      cout<<"Write allowed."<<endl;\n'
-        '    }\n'
-        '  }\n'
-        '  return 0;\n'
-        '}'
+        'var f:text;\n'
+        'begin\n'
+        'assign(f,\'/app/src/file.txt\');\n'
+        'rewrite(f);\n'
+        'for var i := 1 to 5 do\n'
+        'writeln(f,\'text\');\n'
+        'close(f);\n'
+        'end.'
     )
     file = PascalFile(code)
     PascalService._compile(file)
@@ -221,78 +215,39 @@ def test_execute__write_access__error():
     exec_result = PascalService._execute(file=file)
 
     # assert
-    assert 'Write Permission denied.' in exec_result.result
-    assert exec_result.error is None
-    file.remove()
-
-
-def test_execute__clear_error_message__ok(mocker):
-
-    # arrange
-    code = "abnabra"
-    raw_error_message = (
-        "/sandbox/1aab26a5-980c-4aae-9c8d-75cc78394aff.cpp:"
-        " In function ‘int main()’:\n"
-        "/sandbox/1aab26a5-980c-4aae-9c8d-75cc78394aff.cpp:2:5:"
-        " error: ‘adqeqwd’ was not declared in this scope\n"
-        "     adqeqwd\n"
-        "     ^~~~~~~\n"
+    assert exec_result.error == (
+        'Access to the path \"/app/src/file.txt\" is denied.'
     )
-    clear_error_message = (
-        "main.cpp:"
-        " In function ‘int main()’:\n"
-        "main.cpp:2:5:"
-        " error: ‘adqeqwd’ was not declared in this scope\n"
-        "     adqeqwd\n"
-        "     ^~~~~~~\n"
-    )
-    file = PascalFile(code)
-    mocker.patch.object(subprocess.Popen, '__init__', return_value=None)
-    communicate_mock = mocker.patch(
-        'subprocess.Popen.communicate',
-        return_value=(None, raw_error_message)
-    )
-    kill_mock = mocker.patch('subprocess.Popen.kill')
-
-    # act
-    exec_result = PascalService._execute(file=file)
-
-    # assert
-    communicate_mock.assert_called_once_with(
-        input=None,
-        timeout=config.TIMEOUT
-    )
-    kill_mock.assert_called_once()
     assert exec_result.result is None
-    assert exec_result.error == clear_error_message
     file.remove()
 
 
-def test_execute__proc_exception__raise_exception(mocker):
+def test_execute__proc_exception__return_error(mocker):
 
     # arrange
     code = 'Some code'
     data_in = 'Some data in'
+    error_msg = 'some error'
     file = PascalFile(code)
     mocker.patch.object(subprocess.Popen, '__init__', return_value=None)
     communicate_mock = mocker.patch(
         'subprocess.Popen.communicate',
-        side_effect=Exception()
+        side_effect=Exception(error_msg)
     )
     kill_mock = mocker.patch('subprocess.Popen.kill')
 
     # act
-    with pytest.raises(exceptions.ExecutionException) as ex:
-        PascalService._execute(file=file, data_in=data_in)
+    result = PascalService._execute(file=file, data_in=data_in)
 
     # assert
-    assert ex.value.message == messages.MSG_6
     communicate_mock.assert_called_once_with(
         input=data_in,
         timeout=config.TIMEOUT
     )
     kill_mock.assert_called_once()
     file.remove()
+    assert result.error == error_msg
+    assert result.result is None
 
 
 def test_compile__timeout__error(mocker):
@@ -318,26 +273,26 @@ def test_compile__timeout__error(mocker):
     kill_mock.assert_called_once()
 
 
-def test_compile__exception__raise_exception(mocker):
+def test_compile__exception__return_error(mocker):
 
     # arrange
     file_mock = mocker.Mock()
     file_mock.remove = mocker.Mock()
+    error_msg = 'some error'
     mocker.patch.object(PascalFile, '__new__', return_value=file_mock)
 
     mocker.patch.object(subprocess.Popen, '__init__', return_value=None)
     communicate_mock = mocker.patch(
         'subprocess.Popen.communicate',
-        side_effect=Exception
+        side_effect=Exception(error_msg)
     )
     kill_mock = mocker.patch('subprocess.Popen.kill')
 
     # act
-    with pytest.raises(exceptions.CompileException) as ex:
-        PascalService._compile(file_mock)
+    result = PascalService._compile(file_mock)
 
     # assert
-    assert ex.value.message == messages.MSG_7
+    assert result == error_msg
     communicate_mock.assert_called_once_with(timeout=config.TIMEOUT)
     kill_mock.assert_called_once()
 

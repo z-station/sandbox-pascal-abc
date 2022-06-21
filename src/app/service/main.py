@@ -77,6 +77,9 @@ class PascalService:
             result, error = None, str(ex)
         finally:
             proc.kill()
+        if result == '\uffff':
+            result = None
+            error = messages.MSG_8
         return ExecuteResult(
             result=clean_str(result or None),
             error=clean_error(error or None)

@@ -18,6 +18,10 @@ def clean_error(value: Optional[str]) -> Optional[str]:
         )
         if 'Terminated' in value:
             value = messages.MSG_1
-        elif 'the monitored command dumped core' in value:
-            value = messages.MSG_8
+        result = re.findall(
+            pattern='Access to the path ".+" is denied.',
+            string=value
+        )
+        if result:
+            value = result[0]
     return value
