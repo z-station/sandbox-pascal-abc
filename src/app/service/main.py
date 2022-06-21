@@ -57,7 +57,7 @@ class PascalService:
         """ Запускает скомпилирвованный файл,
             передает входные данные
             и возвращает результат работы программы """
-
+        result, error = None, None
         proc = subprocess.Popen(
             args=['mono', file.filepath_exe],
             stdin=subprocess.PIPE,
@@ -72,9 +72,9 @@ class PascalService:
                 timeout=config.TIMEOUT
             )
         except subprocess.TimeoutExpired:
-            result, error = None, messages.MSG_1
+            error = messages.MSG_1
         except Exception as ex:
-            result, error = None, str(ex)
+            error = str(ex)
         finally:
             proc.kill()
         if result == '\uffff':

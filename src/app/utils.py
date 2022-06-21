@@ -18,10 +18,13 @@ def clean_error(value: Optional[str]) -> Optional[str]:
         )
         if 'Terminated' in value:
             value = messages.MSG_1
-        result = re.findall(
-            pattern='Access to the path ".+" is denied.',
-            string=value
-        )
-        if result:
-            value = result[0]
+        elif 'Попытка считывания за концом потока ввода' in value:
+            value = messages.MSG_8
+        else:
+            result = re.findall(
+                pattern='Access to the path ".+" is denied.',
+                string=value
+            )
+            if result:
+                value = result[0]
     return value

@@ -118,6 +118,30 @@ def test_execute__data_in_is_string__ok():
     file.remove()
 
 
+def test_execute__missing_console_input__return_error():
+
+    # arrange
+    code = (
+        'program apples;\n'
+        'var n,k: integer;\n'
+        'begin\n'
+        'readln(n,k);\n'
+        'writeln(k div n);\n'
+        'write(k mod n)\n'
+        'end.'
+    )
+    file = PascalFile(code)
+    PascalService._compile(file)
+
+    # act
+    exec_result = PascalService._execute(file=file)
+
+    # assert
+    assert exec_result.result is None
+    assert exec_result.error == messages.MSG_8
+    file.remove()
+
+
 def test_execute__empty_result__return_none():
 
     # arrange
