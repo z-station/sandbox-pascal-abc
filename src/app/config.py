@@ -2,6 +2,7 @@ import os
 from os import environ as env
 from tempfile import gettempdir
 
+DEBUG = env.get('DEBUG', 'false') == 'true'
 
 TIMEOUT = 5  # seconds
 SANDBOX_USER_UID = int(env.get('SANDBOX_USER_UID', os.getuid()))

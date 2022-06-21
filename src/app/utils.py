@@ -12,7 +12,7 @@ def clean_str(value: Optional[str]) -> Optional[str]:
 def clean_error(value: Optional[str]) -> Optional[str]:
     if isinstance(value, str):
         value = re.sub(
-            pattern='\/(tmp|sandbox)\/\S*\.pas',
+            pattern='(\S)*.pas',
             repl="main.pas",
             string=value
         )

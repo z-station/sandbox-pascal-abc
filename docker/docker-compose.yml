@@ -19,6 +19,7 @@ services:
     networks:
       - localhost
     environment:
+      - DEBUG=true
       - SANDBOX_USER_UID=999
       - SANDBOX_DIR=/sandbox
     restart: on-failure

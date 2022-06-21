@@ -27,6 +27,7 @@ class PascalService:
 
         """ Компилирует код программы """
 
+        result, error = None, None
         pascal_path = '/usr/bin/pascal/pabcnetcclear.exe'
         proc = subprocess.Popen(
             args=['mono', pascal_path, file.filepath_pas],
@@ -35,13 +36,15 @@ class PascalService:
             text=True
         )
         try:
-            _, error = proc.communicate(timeout=config.TIMEOUT)
+            result, error = proc.communicate(timeout=config.TIMEOUT)
         except subprocess.TimeoutExpired:
             error = messages.MSG_1
         except Exception as ex:
-            raise exceptions.CompileException(details=str(ex))
+            error = str(ex)
         finally:
             proc.kill()
+        if result and result != 'OK\n':
+            error = result
         return clean_error(error)
 
     @classmethod
@@ -71,7 +74,7 @@ class PascalService:
         except subprocess.TimeoutExpired:
             result, error = None, messages.MSG_1
         except Exception as ex:
-            raise exceptions.ExecutionException(details=str(ex))
+            result, error = None, str(ex)
         finally:
             proc.kill()
         return ExecuteResult(
