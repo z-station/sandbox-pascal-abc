@@ -142,6 +142,29 @@ def test_execute__missing_console_input__return_error():
     file.remove()
 
 
+def test_execute__missing_formatted_console_input__return_error():
+
+    # arrange
+    code = (
+        'var name, lastname: string;\n'
+        'begin\n'
+        'writeln(\'What is your name?\');\n'
+        'readln(name);\n'
+        'write(\'Hello, \'+name+\'!\');\n'
+        'end.'
+    )
+    file = PascalFile(code)
+    PascalService._compile(file)
+
+    # act
+    exec_result = PascalService._execute(file=file)
+
+    # assert
+    assert exec_result.result is None
+    assert exec_result.error == messages.MSG_8
+    file.remove()
+
+
 def test_execute__empty_result__return_none():
 
     # arrange

@@ -71,15 +71,15 @@ class PascalService:
                 input=data_in,
                 timeout=config.TIMEOUT
             )
+            if isinstance(result, str) and '\uffff' in result:
+                result = None
+                error = messages.MSG_8
         except subprocess.TimeoutExpired:
             error = messages.MSG_1
         except Exception as ex:
             error = str(ex)
         finally:
             proc.kill()
-        if result == '\uffff':
-            result = None
-            error = messages.MSG_8
         return ExecuteResult(
             result=clean_str(result or None),
             error=clean_error(error or None)
