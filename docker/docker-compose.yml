@@ -13,7 +13,7 @@ services:
     image: sandbox-pascal-abc
     volumes:
       - ../src:/app/src
-      - shared_files:/files:ro
+      - import:/sandbox/import:ro
     ports:
       - "9005:9005"
     networks:
@@ -30,5 +30,5 @@ networks:
     external: true
 
 volumes:
-  shared_files:
+  import:
     external: true
