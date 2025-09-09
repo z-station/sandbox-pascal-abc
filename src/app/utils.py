@@ -5,12 +5,18 @@ from app import messages
 
 def clean_str(value: Optional[str]) -> Optional[str]:
     if isinstance(value, str):
+        value = value.replace('\ufeff', '')
+        if not value:
+            return None
         return value.replace('\r', '').rstrip('\n')
     return value
 
 
 def clean_error(value: Optional[str]) -> Optional[str]:
     if isinstance(value, str):
+        value = value.replace('\ufeff', '')
+        if not value:
+            return None
         value = re.sub(
             pattern='(\S)*.pas',
             repl="main.pas",
